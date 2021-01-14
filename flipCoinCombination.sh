@@ -9,35 +9,52 @@ declare -A coin
 
 for (( counter=1; counter<=n; counter++ ))
 do
-	var=$((RANDOM%2))
-	if (( var == 1 ))
+	var=$((RANDOM%4))
+	if (( var == 0 ))
 	then
-		coin[$counter]="H"
+		coin[$counter]="HH"
+	elif (( var == 1 ))
+	then
+		coin[$counter]="TT"
+	elif (( var == 2 ))
+	then
+		coin[$counter]="HT"
 	else
-		coin[$counter]="T"
+		coin[$counter]="TT"
 	fi
 done
 
 echo ${!coin[@]} ${coin[@]}
 
-heads=0
-tails=0
+hh=0
+tt=0
+ht=0
+th=0
 
 for i in ${coin[@]}
 do
-	if [ "$i" == "H" ]
+	if [ "$i" == "HH" ]
 	then
-		((heads++))
+		((hh++))
+	elif [ "$i" == "TT" ]
+	then
+		((tt++))
+	elif [ "$i" == "ht" ]
+	then
+		((ht++))
 	else
-		((tails++))
+		((th++))
 	fi
 done
 
-echo $heads $tails
+echo $hh $tt $ht $th
 
-PH=$(( (heads*100)/n ))
-PT=$(( (tails*100)/n ))
+Phh=$(( (hh*100)/n ))
+Ptt=$(( (tt*100)/n ))
+Pht=$(( (ht*100)/n ))
+Pth=$(( (th*100)/n ))
 
-echo Singlet Percentage of heads is $PH
-echo Singlet Percentage of tails is $PT
-
+echo Doublet Percentage of HH is $Phh
+echo Doublet Percentage of TT is $Ptt
+echo Doublet Percentage of HT is $Pht
+echo Doublet Percentage of TH is $Pth

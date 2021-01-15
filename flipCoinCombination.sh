@@ -1,98 +1,79 @@
-#!/bin/bash -x
+#!/bin/bash
 
 #Welcome to flip coin simulation problem
 
 read -p "Enter the times to flip the coin:" n;
 
+#########SINGLET##########
 
-declare -A coin
+declare -A coin1
+declare -A singlet
+declare -A library
 
 for (( counter=1; counter<=n; counter++ ))
 do
-	var=$((RANDOM%8))
-	if (( var == 0 ))
+	var1=$((RANDOM%2))
+	if (( var1 == 1 ))
 	then
-		coin[$counter]="HHH"
-	elif (( var == 1 ))
-	then
-		coin[$counter]="TTT"
-	elif (( var == 2 ))
-	then
-		coin[$counter]="HTT"
-	elif (( var == 3 ))
-	then
-		coin[$counter]="TTH"
-	elif (( var == 4 ))
-	then
-		coin[$counter]="HHT"
-	elif (( var == 5 ))
-	then
-		coin[$counter]="THH"
-	elif (( var == 6 ))
-	then
-		coin[$counter]="HTH"
-	elif (( var == 7 ))
-	then
-		coin[$counter]="THT"
+		coin1[$counter]="H"
+	else
+		coin1[$counter]="T"
 	fi
 done
 
-echo ${!coin[@]} ${coin[@]}
+echo ${!coin1[@]} ${coin1[@]}
 
-hhh=0
-ttt=0
-htt=0
-tth=0
-hht=0
-thh=0
-hth=0
-tht=0
+heads=0
+tails=0
 
-for i in ${coin[@]}
+for i in ${coin1[@]}
 do
-	if [ "$i" == "HHH" ]
+	if [ "$i" == "H" ]
 	then
-		((hhh++))
-	elif [ "$i" == "TTT" ]
-	then
-		((ttt++))
-	elif [ "$i" == "HTT" ]
-	then
-		((htt++))
-	elif [ "$i" == "TTH" ]
-	then
-		((tth++))
-	elif [ "$i" == "HHT" ]
-	then
-		((hht++))
-	elif [ "$i" == "THH" ]
-	then
-		((thh++))
-	elif [ "$i" == "HTH" ]
-	then
-		((hth++))
-	elif [ "$i" == "THT" ]
-	then
-		((tht++))
+		((heads++))
+	else
+		((tails++))
 	fi
 done
 
-echo $hhh $ttt $htt $tth $hht $thh $hth $tht
+echo $heads $tails
 
-Phhh=$(( (hhh*100)/n ))
-Pttt=$(( (ttt*100)/n ))
-Phtt=$(( (htt*100)/n ))
-Ptth=$(( (tth*100)/n ))
-Phht=$(( (hht*100)/n ))
-Pthh=$(( (thh*100)/n ))
-Phth=$(( (hth*100)/n ))
-Ptht=$(( (tht*100)/n ))
+PH=$(( (heads*100)/n ))
+PT=$(( (tails*100)/n ))
 
-echo Doublet Percentage of HHH is $Phhh
-echo Doublet Percentage of TTT is $Pttt
-echo Doublet Percentage of HTT is $Phtt
-echo Doublet Percentage of TTH is $Ptth
-echo Doublet Percentage of HHT is $Phht
-echo Doublet Percentage of THH is $Pthh
-echo Doublet Percentage of HTH is $Phth
-echo Doublet Percentage of THT is $Ptht
+echo Singlet Percentage of heads is $PH
+echo Singlet Percentage of tails is $PT
+
+library[$PH]="H"
+library[$PT]="T"
+
+singlet[0]="$PH"
+singlet[1]="$PT"
+number1=1
+length1=${#singlet[@]}
+
+while (( number1<=length1 ))
+do
+	for (( base=0; base<length1-1; base++ ))
+	do
+		if (( singlet[$((base))]>singlet[$((base+1))] ))
+		then
+			tmp1=$((singlet[$base]))
+			singlet[$(($base))]=$((singlet[$((base+1))]))
+			singlet[$((base+1))]=$tmp1
+		fi
+	done
+	((number1++))
+done
+
+echo ${singlet[@]}
+
+for i in ${!library[@]}
+do
+	if (( $i == ${singlet[1]} ))
+	then
+		echo Winning Combination is ${library[$((i))]}
+	fi
+done
+
+
